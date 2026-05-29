@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, Optional
 from repos.in_memory import InMemoryRepository
 from repos.json_repo import JsonRepository
 
@@ -12,7 +12,7 @@ class User:
 
 class Repository(Protocol):
     def save(self, user: dict) -> None: ...
-    def find_by_email(self, email: str) -> dict: ...
+    def find_by_email(self, email: str) -> Optional[dict]: ...
 
 
 class UserService:
@@ -22,8 +22,10 @@ class UserService:
     def register(self, user: User) -> None:
         self.repository.save(user.__dict__)
 
-    def find_by_email(self, email: str) -> User:
-        return User(**self.repository.find_by_email(email))
+    def find_by_email(self, email: str) -> Optional[User]:
+        user_data = self.repository.find_by_email(email)
+        if user_data is None: return None
+        return User(**user_data)
 
 
 if __name__ == "__main__":

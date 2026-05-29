@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 class JsonRepository:
     def __init__(self, file_path):
@@ -12,14 +13,14 @@ class JsonRepository:
         except FileNotFoundError:
             return {}
     
-    def save(self, data):
+    def save(self, data: dict) -> None:
         if data['email'] in self.all_data:
             raise ValueError("duplicate email")
         self.all_data[data['email']] = data
         with open(self.file_path, 'w') as f:
             json.dump(self.all_data, f)
 
-    def find_by_email(self, email):
+    def find_by_email(self, email: str) -> Optional[dict]:
         data = self.all_data.get(email)
         if data:
             return data
